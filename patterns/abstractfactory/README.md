@@ -1,14 +1,14 @@
-# Factory Pattern
+# Abstract Factory Pattern
 
 ## Learning Goals
-- Understand the Factory Pattern
-- Learn how to encapsulate object creation logic
-- Implement multiple concrete product types
-- Apply a simple factory to return products based on input
+- Understand Abstract Factory Pattern
+- Encapsulate creation of related products
+- Implement multiple concrete factories
+- Use abstract factories to create families of products
 
 ## Instructions
-Complete the TODOs in `exercise/FactoryExercise.java`.
+Complete the TODOs in `exercise/` Java files.
 
-When you think your implementation is correct, run the tests under `test/TestFactory.java`.
+When you think your implementation is correct, run the tests under `test/TestAbstractFactory.java`.
 
-Passing all tests will unlock the next pattern: **Abstract Factory**.
+Passing all tests will unlock the next pattern: **Strategy**.

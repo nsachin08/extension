@@ -2,9 +2,8 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 import { ProgressService } from "../services/ProgressService";
-import { Console } from "console";
 
-export class PatternTreeProvider implements vscode.TreeDataProvider<PatternItem> {
+export class PatternTreeProvider implements vscode.TreeDataProvider<PatternItem>, vscode.Disposable {
     private _onDidChangeTreeData: vscode.EventEmitter<PatternItem | null> = new vscode.EventEmitter<PatternItem | null>();
     readonly onDidChangeTreeData: vscode.Event<PatternItem | null> = this._onDidChangeTreeData.event;
 
@@ -22,22 +21,30 @@ export class PatternTreeProvider implements vscode.TreeDataProvider<PatternItem>
         return element;
     }
 
-    getChildren(): Thenable<PatternItem[]> {
+    getChildren(element?: PatternItem): Thenable<PatternItem[]> {
+        if (element) return Promise.resolve([]);
+
         if (!fs.existsSync(this.patternsFolder)) {
             vscode.window.showErrorMessage(`Patterns folder not found: ${this.patternsFolder}`);
             return Promise.resolve([]);
         }
 
-        const patternDirs = fs.readdirSync(this.patternsFolder).filter((file) =>
+        const patternDirs = fs.readdirSync(this.patternsFolder).filter(file =>
             fs.statSync(path.join(this.patternsFolder, file)).isDirectory()
         );
 
-        const items = patternDirs.map((dir) => {
+        const items = patternDirs.map(dir => {
             const unlocked = this.progressService.isUnlocked(dir);
             return new PatternItem(dir, dir, unlocked, this.extensionUri);
         });
 
+        console.log("Unlocked patterns:", this.progressService.getUnlockedPatterns());
+
         return Promise.resolve(items);
+    }
+
+    dispose(): void {
+        this._onDidChangeTreeData.dispose();
     }
 }
 
@@ -50,10 +57,10 @@ export class PatternItem extends vscode.TreeItem {
     ) {
         super(label, vscode.TreeItemCollapsibleState.None);
 
-        this.iconPath = unlocked
-            ? vscode.Uri.joinPath(extensionUri, "resources/icons/unlocked.svg")
-            : vscode.Uri.joinPath(extensionUri, "resources/icons/lock.svg");
-        console.log(this.iconPath);
+        this.iconPath = {
+            light: vscode.Uri.joinPath(extensionUri, "resources/icons", unlocked ? "unlocked.svg" : "lock.svg"),
+            dark: vscode.Uri.joinPath(extensionUri, "resources/icons", unlocked ? "unlocked.svg" : "lock.svg")
+        };
 
         this.command = {
             command: "lldTrainer.openPattern",

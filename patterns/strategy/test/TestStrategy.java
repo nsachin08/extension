@@ -4,21 +4,23 @@ import patterns.strategy.exercise.*;
 
 public class TestStrategy {
     public static void main(String[] args) {
-        PaymentContext ctx = new PaymentContext(new CardPaymentStrategy());
 
-        String msg1 = ctx.executePayment(100);
-        if (!msg1.equals("Paid 100 using Card")) {
-            System.out.println("❌ Card payment incorrect: " + msg1);
+        Strategy s1 = new ConcreteStrategyA();
+        Strategy s2 = new ConcreteStrategyB();
+
+        Context c1 = new Context(s1);
+        Context c2 = new Context(s2);
+
+        if (!c1.executeStrategy().equals("A")) {
+            System.out.println("❌ Expected Strategy A");
             return;
         }
 
-        ctx.setStrategy(new UpiPaymentStrategy());
-        String msg2 = ctx.executePayment(200);
-        if (!msg2.equals("Paid 200 using UPI")) {
-            System.out.println("❌ UPI payment incorrect: " + msg2);
+        if (!c2.executeStrategy().equals("B")) {
+            System.out.println("❌ Expected Strategy B");
             return;
         }
 
-        System.out.println("✅ Strategy Pattern Tests Passed");
+        System.out.println("✅ TEST-PASSED");
     }
 }

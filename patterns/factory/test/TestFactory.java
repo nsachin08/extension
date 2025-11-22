@@ -23,6 +23,6 @@ public class TestFactory {
             return;
         }
 
-        System.out.println("✅ Factory Pattern Tests Passed");
+        System.out.println("✅ TEST-PASSED"); // <-- Standard success line
     }
 }

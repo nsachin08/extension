@@ -6,7 +6,10 @@
   "engines": {
     "vscode": "^1.106.1"
   },
-  "categories": ["Education", "Other"],
+  "categories": [
+    "Education",
+    "Other"
+  ],
   "activationEvents": [
     "onView:lldTrainer.explorer",
     "onCommand:lldTrainer.openPattern",
@@ -14,25 +17,27 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [
-      { "command": "lldTrainer.openPattern", "title": "Open Pattern" },
-      { "command": "lldTrainer.refreshTree", "title": "Refresh Patterns" }
-    ],
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "lldTrainer",
-          "title": "LLD Trainer",
-          "icon": "resources/factory.svg"
-        }
-      ]
-    },
-    "views": {
-      "lldTrainer": [
-        { "id": "lldTrainer.explorer", "name": "Patterns" }
-      ]
-    }
+  "commands": [
+    { "command": "lldTrainer.openPattern", "title": "Open Pattern" },
+    { "command": "lldTrainer.refreshTree", "title": "Refresh Patterns" },
+    { "command": "lldTrainer.resetProgress", "title": "Reset Progress" },
+    { "command": "lldTrainer.showUnlockedPatterns", "title": "Show Unlocked Patterns" }
+  ],
+  "viewsContainers": {
+    "activitybar": [
+      {
+        "id": "lldTrainer",
+        "title": "LLD Trainer",
+        "icon": "resources/factory.svg"
+      }
+    ]
   },
+  "views": {
+    "lldTrainer": [
+      { "id": "lldTrainer.explorer", "name": "Patterns" }
+    ]
+  }
+},
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
@@ -41,11 +46,13 @@
     "test": "vscode-test"
   },
   "devDependencies": {
+    "@types/marked": "^5.0.2",
+    "@types/mocha": "^10.0.1",
     "@types/node": "^22.19.1",
     "@types/vscode": "^1.106.1",
     "@vscode/vsce": "^3.7.0",
-    "typescript": "^5.9.3",
-    "@types/mocha": "^10.0.1"
+    "marked": "^5.1.2",
+    "typescript": "^5.9.3"
   },
   "type": "commonjs"
 }

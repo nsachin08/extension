@@ -1,27 +1,24 @@
-package patterns.abstractfactory.test;
+package patterns.abstractFactory.test;
 
-import patterns.abstractfactory.exercise.*;
+import patterns.abstractFactory.exercise.*;
 
 public class TestAbstractFactory {
     public static void main(String[] args) {
-        GUIFactory windows = FactoryProvider.getFactory("Windows");
-        GUIFactory mac = FactoryProvider.getFactory("Mac");
 
-        if (windows == null || mac == null) {
-            System.out.println("❌ Factories should not be null");
+        AbstractFactory factory = new ConcreteFactory1();
+        ProductA p1 = factory.createProductA();
+        ProductB p2 = factory.createProductB();
+
+        if (!p1.getName().equals("A1")) {
+            System.out.println("❌ Expected Product A1");
             return;
         }
 
-        if (!windows.createButton().render().equals("Windows Button")) {
-            System.out.println("❌ Windows button not rendered correctly");
+        if (!p2.getName().equals("B1")) {
+            System.out.println("❌ Expected Product B1");
             return;
         }
 
-        if (!mac.createCheckbox().render().equals("Mac Checkbox")) {
-            System.out.println("❌ Mac checkbox not rendered correctly");
-            return;
-        }
-
-        System.out.println("✅ Abstract Factory Tests Passed");
+        System.out.println("✅ TEST-PASSED");
     }
 }
