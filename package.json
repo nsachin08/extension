@@ -1,0 +1,51 @@
+{
+  "name": "lpd-trainer",
+  "displayName": "LPD Trainer",
+  "description": "Learn low level design patterns in Java",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.106.1"
+  },
+  "categories": ["Education", "Other"],
+  "activationEvents": [
+    "onView:lldTrainer.explorer",
+    "onCommand:lldTrainer.openPattern",
+    "onCommand:lldTrainer.refreshTree"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      { "command": "lldTrainer.openPattern", "title": "Open Pattern" },
+      { "command": "lldTrainer.refreshTree", "title": "Refresh Patterns" }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "lldTrainer",
+          "title": "LLD Trainer",
+          "icon": "resources/factory.svg"
+        }
+      ]
+    },
+    "views": {
+      "lldTrainer": [
+        { "id": "lldTrainer.explorer", "name": "Patterns" }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.1",
+    "@types/vscode": "^1.106.1",
+    "@vscode/vsce": "^3.7.0",
+    "typescript": "^5.9.3",
+    "@types/mocha": "^10.0.1"
+  },
+  "type": "commonjs"
+}
