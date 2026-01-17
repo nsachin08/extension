@@ -19,6 +19,6 @@ public class TestAbstractFactory {
             return;
         }
 
-        System.out.println("✅ TEST-PASSED");
+        System.out.println("TEST-PASSED");
     }
 }

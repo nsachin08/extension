@@ -1,0 +1,102 @@
+:root {
+    --bg: #ffffff;
+    --card-bg: #f9f9f9;
+    --border: #e0e0e0;
+    --primary: #007acc;
+    --success: #2ea043;
+    --error: #d73a49;
+    --text: #24292f;
+    --muted: #57606a;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 24px;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+}
+
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+h1, h2, h3 {
+    margin-top: 0;
+    color: #1f2328;
+}
+
+pre {
+    background: #0d1117;
+    color: #c9d1d9;
+    padding: 14px;
+    border-radius: 6px;
+    overflow-x: auto;
+}
+
+code {
+    font-family: Consolas, monospace;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+button {
+    padding: 8px 14px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button.primary {
+    background: var(--primary);
+    color: white;
+}
+
+button.primary:hover {
+    background: #0366d6;
+}
+
+button.secondary {
+    background: #eaeef2;
+    color: var(--text);
+}
+
+button.secondary:hover {
+    background: #d0d7de;
+}
+
+#output {
+    white-space: pre-wrap;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+}
+
+.output-success {
+    border-left: 4px solid var(--success);
+}
+
+.output-error {
+    border-left: 4px solid var(--error);
+}
+
+.footer {
+    margin-top: 24px;
+    font-size: 12px;
+    color: var(--muted);
+}

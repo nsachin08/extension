@@ -60,53 +60,86 @@ export class PatternWebviewProvider {
     }
 
     private getHtml(content: string) {
-        const nonce = getNonce();
-        return `<!DOCTYPE html>
+    const nonce = getNonce();
+
+    const styleUri = vscode.Uri.joinPath(
+        this.context.extensionUri,
+        "src",
+        "webviews",
+        "styles.css"
+    );
+
+    return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Pattern</title>
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'nonce-${nonce}';">
-<style>
-    body { font-family: sans-serif; padding: 20px; line-height: 1.5; }
-    h1,h2,h3,h4,h5,h6 { color: #444; }
-    pre { background: #f3f3f3; padding: 10px; border-radius: 5px; overflow-x: auto; }
-    code { background: #f3f3f3; padding: 2px 4px; border-radius: 3px; }
-    ul, ol { margin-left: 20px; }
-    button { margin: 5px; padding: 5px 10px; font-size: 14px; cursor: pointer; }
-    #output { margin-top:20px; padding:10px; background:#f8f8f8; border-radius:5px; white-space:pre-wrap; }
-</style>
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'none';
+               style-src ${vscode.Uri.parse(styleUri.toString())} 'unsafe-inline';
+               script-src 'nonce-${nonce}';">
+
+<link href="${styleUri}" rel="stylesheet">
+
 </head>
 <body>
-<div>${content}</div>
-<div>
-    <button id="openExercise">Open Exercise</button>
-    <button id="runTest">Run Test</button>
+<div class="container">
+
+    <div class="card">
+        ${content}
+    </div>
+
+    <div class="actions">
+        <button class="primary" id="runTest">▶ Run Test</button>
+        <button class="secondary" id="openExercise">📂 Open Exercise</button>
+    </div>
+
+    <div class="card" id="outputCard">
+        <h3>Output</h3>
+        <div id="output">No output yet.</div>
+    </div>
+
+    <div class="footer">
+        LLD Trainer • Test-driven learning
+    </div>
+
 </div>
-<div id="output"></div>
 
 <script nonce="${nonce}">
     const vscode = acquireVsCodeApi();
 
-    document.getElementById('openExercise').addEventListener('click', () => {
-        vscode.postMessage({ command: 'openExercise' });
-    });
+    document.getElementById('openExercise')
+        .addEventListener('click', () => {
+            vscode.postMessage({ command: 'openExercise' });
+        });
 
-    document.getElementById('runTest').addEventListener('click', () => {
-        vscode.postMessage({ command: 'runTest' });
-    });
+    document.getElementById('runTest')
+        .addEventListener('click', () => {
+            vscode.postMessage({ command: 'runTest' });
+        });
 
     window.addEventListener('message', event => {
         const message = event.data;
         if (message.command === 'showOutput') {
             const outputDiv = document.getElementById('output');
+            const card = document.getElementById('outputCard');
+
             outputDiv.textContent = message.text;
+
+            card.classList.remove("output-success", "output-error");
+            if (message.text.includes("TEST-PASSED")) {
+                card.classList.add("output-success");
+            } else if (message.text.includes("❌")) {
+                card.classList.add("output-error");
+            }
         }
     });
 </script>
+
 </body>
 </html>`;
-    }
+}
+
 
     // Open all exercise files in editor
     private openExerciseFiles(patternId: string) {
@@ -156,18 +189,28 @@ export class PatternWebviewProvider {
                 return;
             }
 
-            cp.execSync(`javac -cp "${outDir}" ${testFiles.join(" ")}`, { stdio: 'inherit' });
-
+            //cp.execSync(`javac -cp "${outDir}" ${testFiles.join(" ")}`, { stdio: 'inherit' });
+            cp.execSync(`javac -cp "${outDir}" -d "${outDir}" ${testFiles.join(" ")}`, { stdio: 'inherit' });
+   
+            
             // Run test class
             const packageName = this.progressService.PatternPackages[patternId] || patternId;
             const testClass = `patterns.${packageName}.test.Test${capitalize(packageName)}`;
             const output = cp.execSync(`java -cp "${outDir}" ${testClass}`, { encoding: 'utf-8' });
 
-            // Show output in webview
-            panel.webview.postMessage({ command: 'showOutput', text: output });
+            if (output.includes("TEST-PASSED")) {
+                panel.webview.postMessage({
+                    command: 'showOutput',
+                    text: output + "\n\n🎉 Pattern completed. Next pattern unlocked!"
+                });
+                this.unlockNextPattern(patternId, panel);
+            } else {
+                panel.webview.postMessage({
+                    command: 'showOutput',
+                    text: output + "\n\n❌ Tests failed. Fix issues to proceed."
+                });
+            }
 
-            // Unlock next pattern
-            this.unlockNextPattern(patternId, panel);
 
         } catch (err: any) {
             const errMessage = err.stdout || err.message || 'Unknown error';
